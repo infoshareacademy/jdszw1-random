@@ -19,16 +19,19 @@ where w.partner is not null and date_part('year', w.data_utworzenia)<2019 and
       w.stan_wniosku ilike '%wyplacony%'
 group by w. partner, w.kwota_rekompensaty, w.kwota_rekompensaty_oryginalna, sr.kwota, przychod;
 
+
 select distinct w. partner, round(sum(((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100)),2)
     as przychodzpartnera, sum(w.kwota_rekompensaty) as kwotarekompensaty,
                 round(sum(((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100))*100/(select round(sum(((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100)),2)
                     from wnioski w
-                    where  partner is not null and date_part('year', w.data_utworzenia)<2019 and w.stan_wniosku ilike '%wyplacony%'),1) as procentzpartnera
+                    where  partner is not null and date_part('year', w.data_utworzenia)<2019 and w.stan_wniosku ilike '%wyplacony%'),1) as procentzpartnera,
+                count(*) as "liczbawnioskow", round((sum(kwota_rekompensaty) / count(*)),2) as "kwotanawniosek"
 from wnioski w
 where w.partner is not null and date_part('year', w.data_utworzenia)<2019 and
       w.stan_wniosku ilike '%wyplacony%'
 group by w. partner
 order by przychodzpartnera desc;
+
 
 select round(sum(((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100)),2) as przychodzpartnera
 from wnioski w
