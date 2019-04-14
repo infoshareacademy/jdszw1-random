@@ -1,0 +1,3 @@
+select partner, sum(kwota_rekompensaty) as "lacznakwota", count(*) as "liczbawnioskow", (sum(kwota_rekompensaty) / count(*)) as "kwotanawniosek", stan_wniosku from wnioski
+where partner is not null and kwota_rekompensaty is not null and stan_wniosku ilike '%wyplacony%'
+group by partner, stan_wniosku
