@@ -10,11 +10,11 @@ where stan_wniosku ilike ('%wyplacony%') and stan_wniosku is not null ;
 select count(id) from rekompensaty --szczegoly_rekompensat
 where id is not null;
 
---liczba wniosków o ststusie - zaakaceptowane
+--liczba wniosków o statusie - zaakaceptowane
 select count(status) from analizy_wnioskow
 where status ilike '%zaakceptowany' and status is not null;
 
---zestawienie partner|kwoty_rekompensaty|kwoty_rekompensaty_oryginejnej|kowoty z tabeli szczegoly_rekompensat|
+--zestawienie: partner | kwoty_rekompensaty|kwoty_rekompensaty_oryginejnej | kwoty z tabeli szczegoly_rekompensat |
 --przychod obliczany z procenta opłaty za usługę dla każdego wniosku oddzielnie 
 select w. partner, w.kwota_rekompensaty, w.kwota_rekompensaty_oryginalna, sr.kwota,
        ((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100) as przychod from wnioski w
@@ -24,9 +24,9 @@ where w.partner is not null and date_part('year', w.data_utworzenia)<2019 and
       w.stan_wniosku ilike '%wyplacony%'
 group by w. partner, w.kwota_rekompensaty, w.kwota_rekompensaty_oryginalna, sr.kwota, przychod;
 
---zestawnienie partner|przychód z partnera jako całościowy przychód dla danego partnera obliczony na podswteir procentu za usługę|
---kwotarekopmensaty jako suma rekompensat dla danego partnera | procentzpartnera jako procent udziału danego partnera dla zsumowanego przychodu 
---dla parnetrów | libczawnioskoww o stanie_wpiosku - wpłacony | kwotanawniosek - zsumaowana kwota_rekompensat podzielona przez liczbę wniosków wypłaconych
+--zestawnienie partner | przychód z partnera jako całościowy przychód dla danego partnera obliczony na podstawie procentu za usługę |
+--kwota_rekopmensaty jako suma rekompensat dla danego partnera | procentzpartnera jako procent udziału danego partnera dla zsumowanego przychodu 
+--dla parnetrów | libczawnioskow o stanie_wpiosku - wpłacony | kwotanawniosek - zsumaowana kwota_rekompensat podzielona przez liczbę wniosków wypłaconych
 select distinct w. partner, round(sum(((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100)),2)
     as przychodzpartnera, sum(w.kwota_rekompensaty) as kwotarekompensaty,
                 round(sum(((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100))*100/(select round(sum(((w.oplata_za_usluge_procent * w.kwota_rekompensaty )/ 100)),2)
