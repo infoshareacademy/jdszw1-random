@@ -1,13 +1,17 @@
 with przychod as (
-    select distinct id, partner, round(((oplata_za_usluge_procent * kwota_rekompensaty )/ 100) + ((oplata_za_usluge_prawnicza_procent * kwota_rekompensaty )/ 100),2) as przychod_id
+    select distinct id, 
+    (case when partner is null then 'bez partnera' else partner end) as partner, 
+    round(((oplata_za_usluge_procent * kwota_rekompensaty )/ 100) + ((oplata_za_usluge_prawnicza_procent * kwota_rekompensaty )/ 100),2) as przychod_id
     from wnioski
-    where partner is null and date_part('year', data_utworzenia)<2019 and
+    where partner not ilike '%bez %' and date_part('year', data_utworzenia)<2019 and
       stan_wniosku ilike '%wyplacony%'
 ),
      przychod_bezpartnera as(
-    select distinct id, partner, round(((oplata_za_usluge_procent * kwota_rekompensaty )/ 100) + ((oplata_za_usluge_prawnicza_procent * kwota_rekompensaty )/ 100),2) as przychod_id
+    select distinct id, 
+         (case when partner is null then 'bez partnera' else partner end) as partner, 
+         round(((oplata_za_usluge_procent * kwota_rekompensaty )/ 100) + ((oplata_za_usluge_prawnicza_procent * kwota_rekompensaty )/ 100),2) as przychod_id
     from wnioski
-    where partner is not null and date_part('year', data_utworzenia)<2019 and
+    where date_part('year', data_utworzenia)<2019 and
       stan_wniosku ilike '%wyplacony%'
      )
 select partner,
@@ -35,4 +39,4 @@ select partner,
        count(id) as liczba_wnioskow
        from przychod_bezpartnera
 group by partner
-order by partner;
+order by partner desc;
