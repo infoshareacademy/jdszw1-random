@@ -1,0 +1,14 @@
+RowNumber,Row Numbers from 1 to 10000
+CustomerId,Unikalny identyfikator klienta banku
+Surname,Nazwisko klienta
+CreditScore,Scoring kredytowy klienta
+Geography,Kraj konta klienta
+Gender,Płeć
+Age,Wiek klienta
+Tenure,Liczba lat relacji klienta z bankiem
+Balance,Bilans rachunków klienta w banku
+NumOfProducts,Liczba produktów
+HasCrCard,Flaga czy klienta ma kartę kredytową w banku
+IsActiveMember,Flaga czy klient jest aktywnym użytkownikiem konta
+EstimatedSalary,Szacowane zarobki klienta
+Exited,"Flaga 1 jeśli klient zamknął relację z bankiem, 0 jeśli pozostał w banku"
