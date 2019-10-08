@@ -29,7 +29,7 @@ def get_generator(filename, number=None):
     # folder z danymi, do którego będą doklejane ścieżki z odpowiedniej kolumny
     directory = os.path.dirname(filename)
     # stworzenie iteratora po danych z zadanymi opcjami
-    return gen.flow_from_dataframe(df, directory, "path", class_mode="other", y_col=['beige', 'black', 'blue', 'brown', 'gray', 'green', 'multicolor', 'orange', 'pink', 'red', 'violet', 'white', 'yellow', 'transaprent'], target_size=(500, 500), batch_size=10)
+    return gen.flow_from_dataframe(df, directory, "path", class_mode="other", y_col=['beige', 'black', 'blue', 'brown', 'gray', 'green', 'multicolor', 'orange', 'pink', 'red', 'violet', 'white', 'yellow', 'transaprent'], target_size=(500, 500), batch_size=20)
 
 
 
@@ -88,7 +88,7 @@ def CNN2_norm(gen):
 def get_callbacks(name):
     # pusta lista na callbacki
     callbacks = []
-    name=name+'.hdf5'
+    name = name + '.hdf5'
 
     # zapisywanie wag do pliku weights.hdf5 pod warunkiem że val_loss spadał, zapisuje tylko najlepszy model
     mc = ModelCheckpoint(name, monitor="val_loss", save_best_only=True, verbose=1)
@@ -105,17 +105,22 @@ def get_callbacks(name):
     return callbacks
 
 def main():
-    epochs=1
+    epochs=25
     
     train_gen = get_generator(train_labels)
     val_gen = get_generator(val_labels)
     test_gen = get_generator(test_labels)
+    
+    call = get_callbacks("weights_model")
+    call2_norm = get_callbacks("weights_model2_norm")
+    
     # stwórz model
     model = create_model(train_gen)
     model2=CNN2_norm(train_gen)
+    
     # trening :)
-    model.fit_generator(train_gen, epochs=epochs, validation_data=val_gen)
-    model2.fit_generator(train_gen, epochs=epochs, validation_data=val_gen)
+    model.fit_generator(train_gen, epochs=epochs, validation_data=val_gen, callbacks=call)
+    model2.fit_generator(train_gen, epochs=epochs, validation_data=val_gen, callbacks=call2_norm )
     
     score = model.evaluate_generator(test_gen, verbose=0)
     score = ['%.3f' % elem for elem in score]
